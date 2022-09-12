@@ -2,7 +2,7 @@ const fs = require("fs").promises;
 const path = require("path");
 const crypto = require("crypto");
 // by default: const uuid = crypto.randomUUID();
-const uuid = crypto.randomBytes(10).toString("hex");
+// const uuid = crypto.randomBytes(10).toString("hex");
 
 const contactsPath = path.resolve("db", "contacts.json");
 
@@ -19,7 +19,13 @@ async function getContactById(contactId) {
   try {
     const data = await fs.readFile(contactsPath);
     const contacts = JSON.parse(data);
-    return contacts.find((contact) => contact.id === `${contactId}`);
+    const contact = contacts.find((contact) => contact.id === `${contactId}`);
+
+    if (!contact) {
+      return "No contact found";
+    }
+
+    return contact;
   } catch (error) {
     console.error("Failed to read contact", error.message);
   }
@@ -31,8 +37,7 @@ async function removeContact(contactId) {
     const contacts = JSON.parse(data);
     let match = contacts.findIndex((contact) => contact.id === contactId);
     if (match < 0) {
-      console.log("No contact found");
-      return;
+      return "No contact found";
     }
 
     const contact = contacts.splice(match, 1);
@@ -50,7 +55,14 @@ async function addContact(name, email, phone) {
     const data = await fs.readFile(contactsPath);
     const contacts = JSON.parse(data);
 
-    contacts.push({ id: uuid, name, email, phone });
+    const lastContactId = contacts[contacts.length - 1]?.id;
+    const newContactId = !contacts.length
+      ? "1"
+      : (Number(lastContactId) + 1).toString();
+
+    // const uuid = crypto.randomBytes(10).toString("hex");
+
+    contacts.push({ id: newContactId, name, email, phone });
     fs.writeFile(contactsPath, JSON.stringify(contacts));
     return contacts;
   } catch (error) {
