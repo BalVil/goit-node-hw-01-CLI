@@ -4,11 +4,13 @@ const crypto = require("crypto");
 // by default: const uuid = crypto.randomUUID();
 // const uuid = crypto.randomBytes(10).toString("hex");
 
-const contactsPath = path.resolve("db", "contacts.json");
+// const contactsPath = path.resolve("db", "contacts.json");
+
+const absolutePath = path.join(__dirname, "./db/contacts.json");
 
 async function listContacts() {
   try {
-    const data = await fs.readFile(contactsPath);
+    const data = await fs.readFile(absolutePath);
     return JSON.parse(data);
   } catch (error) {
     console.error("Failed to read file", error.message);
@@ -17,7 +19,7 @@ async function listContacts() {
 
 async function getContactById(contactId) {
   try {
-    const data = await fs.readFile(contactsPath);
+    const data = await fs.readFile(absolutePath);
     const contacts = JSON.parse(data);
     const contact = contacts.find((contact) => contact.id === `${contactId}`);
 
@@ -33,15 +35,15 @@ async function getContactById(contactId) {
 
 async function removeContact(contactId) {
   try {
-    const data = await fs.readFile(contactsPath);
+    const data = await fs.readFile(absolutePath);
     const contacts = JSON.parse(data);
-    let match = contacts.findIndex((contact) => contact.id === contactId);
+    let match = contacts.findIndex((user) => user.id === contactId);
     if (match < 0) {
       return "No contact found";
     }
 
     const contact = contacts.splice(match, 1);
-    fs.writeFile(contactsPath, JSON.stringify(contacts));
+    fs.writeFile(absolutePath, JSON.stringify(contacts));
 
     return contact;
   } catch (error) {
@@ -52,7 +54,7 @@ async function removeContact(contactId) {
 async function addContact(name, email, phone) {
   try {
     //   const contacts = await listContacts();
-    const data = await fs.readFile(contactsPath);
+    const data = await fs.readFile(absolutePath);
     const contacts = JSON.parse(data);
 
     const lastContactId = contacts[contacts.length - 1]?.id;
@@ -63,7 +65,7 @@ async function addContact(name, email, phone) {
     // const uuid = crypto.randomBytes(10).toString("hex");
 
     contacts.push({ id: newContactId, name, email, phone });
-    fs.writeFile(contactsPath, JSON.stringify(contacts));
+    fs.writeFile(absolutePath, JSON.stringify(contacts));
     return contacts;
   } catch (error) {
     console.error("Failed to add contact", error);
