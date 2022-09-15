@@ -10,7 +10,7 @@ https://monosnap.com/file/qb79UNF6wEQ1877mGeso55OC8tpTNL
 
 # Додаємо контакт
 
-https://monosnap.com/file/SirSlDVWSirDFpy6RYaDzJ1Y4BqWdO
+https://monosnap.com/file/R7ucPV1ZbRLVapeO9FnZdPth0wYwe1
 
 # Видаляємо контакт
 
