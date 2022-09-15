@@ -14,4 +14,4 @@ https://monosnap.com/file/R7ucPV1ZbRLVapeO9FnZdPth0wYwe1
 
 # Видаляємо контакт
 
-https://monosnap.com/file/qBbJNsDAKlqbrWWZbQxOBdOt0myOc5
+https://monosnap.com/file/3FDpu63uwZqATfaBZ7YevcXKGLKzNZ

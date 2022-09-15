@@ -6,12 +6,13 @@ const crypto = require('crypto');
 
 // const contactsPath = path.resolve("db", "contacts.json");
 
-const absolutePath = path.join(__dirname, './db/contacts.json');
+const absolutePath = path.join(__dirname, 'db', 'contacts.json');
 
 async function listContacts() {
   try {
     const data = await fs.readFile(absolutePath);
-    return JSON.parse(data);
+    const contacts = JSON.parse(data);
+    return contacts;
   } catch (error) {
     console.error('Failed to read file', error.message);
   }
@@ -19,12 +20,11 @@ async function listContacts() {
 
 async function getContactById(contactId) {
   try {
-    const data = await fs.readFile(absolutePath);
-    const contacts = JSON.parse(data);
-    const contact = contacts.find(contact => contact.id === `${contactId}`);
+    const contacts = await listContacts();
+    const contact = contacts.find(contact => contact.id === contactId);
 
     if (!contact) {
-      return 'No contact found';
+      return null;
     }
 
     return contact;
@@ -35,17 +35,16 @@ async function getContactById(contactId) {
 
 async function removeContact(contactId) {
   try {
-    const data = await fs.readFile(absolutePath);
-    const contacts = JSON.parse(data);
-    let match = contacts.findIndex(user => user.id === contactId);
-    if (match < 0) {
-      return 'No contact found';
+    const contacts = await listContacts();
+    let idx = contacts.findIndex(user => user.id === contactId);
+    if (idx === -1) {
+      return null;
     }
 
-    const contact = contacts.splice(match, 1);
-    fs.writeFile(absolutePath, JSON.stringify(contacts));
+    const [removedContact] = contacts.splice(idx, 1);
+    await fs.writeFile(absolutePath, JSON.stringify(contacts));
 
-    return contact;
+    return removedContact;
   } catch (error) {
     console.error('Failed to remove contact', error);
   }
@@ -53,20 +52,16 @@ async function removeContact(contactId) {
 
 async function addContact(name, email, phone) {
   try {
-    //   const contacts = await listContacts();
-    const data = await fs.readFile(absolutePath);
-    const contacts = JSON.parse(data);
+    const contacts = await listContacts();
 
     const lastContactId = contacts[contacts.length - 1]?.id;
-    const newContactId = !contacts.length
-      ? '1'
-      : (Number(lastContactId) + 1).toString();
+    const id = contacts.length ? (Number(lastContactId) + 1).toString() : '1';
 
     // const uuid = crypto.randomBytes(10).toString("hex");
-    const newContact = { id: newContactId, name, email, phone };
+    const newContact = { id, name, email, phone };
 
     contacts.push(newContact);
-    fs.writeFile(absolutePath, JSON.stringify(contacts));
+    await fs.writeFile(absolutePath, JSON.stringify(contacts));
 
     return newContact;
   } catch (error) {
