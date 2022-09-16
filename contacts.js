@@ -1,10 +1,5 @@
 const fs = require('fs').promises;
 const path = require('path');
-const crypto = require('crypto');
-// by default: const uuid = crypto.randomUUID();
-// const uuid = crypto.randomBytes(10).toString("hex");
-
-// const contactsPath = path.resolve("db", "contacts.json");
 
 const absolutePath = path.join(__dirname, 'db', 'contacts.json');
 
@@ -57,7 +52,6 @@ async function addContact(name, email, phone) {
     const lastContactId = contacts[contacts.length - 1]?.id;
     const id = contacts.length ? (Number(lastContactId) + 1).toString() : '1';
 
-    // const uuid = crypto.randomBytes(10).toString("hex");
     const newContact = { id, name, email, phone };
 
     contacts.push(newContact);
