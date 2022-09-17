@@ -1,13 +1,12 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const absolutePath = path.join(__dirname, 'db', 'contacts.json');
+const absolutePath = path.join(__dirname, 'db/contacts.json');
 
 async function listContacts() {
   try {
     const data = await fs.readFile(absolutePath);
-    const contacts = JSON.parse(data);
-    return contacts;
+    return JSON.parse(data);
   } catch (error) {
     console.error('Failed to read file', error.message);
   }
@@ -17,12 +16,7 @@ async function getContactById(contactId) {
   try {
     const contacts = await listContacts();
     const contact = contacts.find(contact => contact.id === contactId);
-
-    if (!contact) {
-      return null;
-    }
-
-    return contact;
+    return contact || null;
   } catch (error) {
     console.error('Failed to read contact', error.message);
   }
@@ -55,7 +49,7 @@ async function addContact(name, email, phone) {
     const newContact = { id, name, email, phone };
 
     contacts.push(newContact);
-    await fs.writeFile(absolutePath, JSON.stringify(contacts));
+    await fs.writeFile(absolutePath, JSON.stringify(contacts, null, 2));
 
     return newContact;
   } catch (error) {
