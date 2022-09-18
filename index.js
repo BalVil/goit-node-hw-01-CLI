@@ -13,7 +13,7 @@ program
   .option('-e, --email <type>', 'user email')
   .option('-p, --phone <type>', 'user phone');
 
-program.parse(process.argv);
+program.parse();
 const argv = program.opts();
 
 async function invokeAction({ action, id, name, email, phone }) {

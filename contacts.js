@@ -3,6 +3,9 @@ const path = require('path');
 
 const absolutePath = path.join(__dirname, 'db/contacts.json');
 
+const updateContactList = async contacts =>
+  await fs.writeFile(absolutePath, JSON.stringify(contacts, null, 2));
+
 async function listContacts() {
   try {
     const data = await fs.readFile(absolutePath);
@@ -15,6 +18,8 @@ async function listContacts() {
 async function getContactById(contactId) {
   try {
     const contacts = await listContacts();
+
+    //з yargs треба: const contactId = String(id);
     const contact = contacts.find(contact => contact.id === contactId);
     return contact || null;
   } catch (error) {
@@ -31,7 +36,7 @@ async function removeContact(contactId) {
     }
 
     const [removedContact] = contacts.splice(idx, 1);
-    await fs.writeFile(absolutePath, JSON.stringify(contacts));
+    await updateContactList(contacts);
 
     return removedContact;
   } catch (error) {
@@ -49,7 +54,7 @@ async function addContact(name, email, phone) {
     const newContact = { id, name, email, phone };
 
     contacts.push(newContact);
-    await fs.writeFile(absolutePath, JSON.stringify(contacts, null, 2));
+    await updateContactList(contacts);
 
     return newContact;
   } catch (error) {
